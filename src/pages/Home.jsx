@@ -28,43 +28,47 @@ function Home() {
             </div>
         </div>
 
-        <div className="offers w-full h-[25rem]  my-2">
+        <div className="offers w-full h-auto  my-2 ">
             <h2 className='text-3xl font-bold  text-center py-8'>Our Top Menu's</h2>
 
-            <div className="menulist w-[95%] h-[18rem]  mx-auto rounded-lg mb-4 flex items-center justify-between gap-4 p-4">
-                <div className="menuitems w-[30%] h-full bg-white rounded-lg shadow-md p-2">
-                    <img 
+           <div className="menulist w-[95%] mx-auto rounded-lg mb-4">
+  
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                
+            
+                <div className="menuitems bg-white rounded-lg shadow-md p-2">
+                <img 
                     src="https://foods.africanmarketdubai.com/wp-content/uploads/2024/10/afang-soup.jpeg"
-                     alt="Menu Item" 
-                     className='w-full h-[12rem] object-cover rounded-lg'
-                     />
-
-                     <p className="text-lg font-semibold text-gray-800 mt-2 text-center">Delicious Afang soup</p>
+                    alt="Menu Item" 
+                    className='w-full h-[12rem] object-cover rounded-lg'
+                />
+                <p className="text-lg font-semibold text-gray-800 mt-2 text-center">Delicious Afang soup</p>
                 </div>
 
-                <div className="menuitems  menuitems w-[30%] h-full bg-white rounded-lg shadow-md p-2 ">
-                    <img 
+                <div className="menuitems bg-white rounded-lg shadow-md p-2">
+                <img 
                     src="https://i.ytimg.com/vi/nmZ1TVhFQJo/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAnyPFIDnXi9AFbPPd5Ge9OwKo0Gg"
-                     alt="Menu Item" 
-                     className='w-full h-[12rem] object-cover rounded-lg'
-                     />
-                     <p className="text-lg font-semibold text-gray-800 mt-2 text-center">Sweet Banger Rice</p>
+                    alt="Menu Item" 
+                    className='w-full h-[12rem] object-cover rounded-lg'
+                />
+                <p className="text-lg font-semibold text-gray-800 mt-2 text-center">Sweet Banger Rice</p>
                 </div>
 
-                <div className="menuitems menuitems w-[30%] h-full bg-white rounded-lg shadow-md p-2">
-                    <img 
+                <div className="menuitems bg-white rounded-lg shadow-md p-2">
+                <img 
                     src="https://dooneyskitchen.com/wp-content/uploads/2021/05/Fishermans-soup.jpeg"
-                     alt="Menu Item" 
-                     className='w-full h-[12rem] object-cover rounded-lg'
-                     />
-                     <p className="text-lg font-semibold text-gray-800 mt-2 text-center">Assorted Fisherman Soup</p>
+                    alt="Menu Item" 
+                    className='w-full h-[12rem] object-cover rounded-lg'
+                />
+                <p className="text-lg font-semibold text-gray-800 mt-2 text-center">Assorted Fisherman Soup</p>
                 </div>
 
+            </div>
             </div>
         </div>
         <br />
 
-        <div className="ref w-full h-[25rem]  mx-auto rounded-lg my-1  items-center  pt-4">
+        <div className="ref w-full h-auto  mx-auto rounded-lg my-1  items-center  pt-4 ">
             <Review />
         </div>
 

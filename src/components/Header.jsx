@@ -18,7 +18,7 @@ function Header() {
             </h1>
         </div>
 
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="hidden md:flex items-center gap-3 ml-auto">
             <button 
                 className="px-5 py-2 bg-transparent border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300"
             >

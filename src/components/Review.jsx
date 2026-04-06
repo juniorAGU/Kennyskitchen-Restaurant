@@ -53,27 +53,29 @@ function Review() {
           <p className="text-gray-600 max-w-2xl mx-auto">
             Come Experirnce the Best Food in Town with Us! We are committed to your stomach!
           </p>
-            <div className="reviewscontainer w-[95%] h-full  mx-auto rounded-lg shadow-md mt-4 flex items-center justify-between gap-4 p-4">
-                {reviews.map(items => (
-                    <div key={items.id} className="reviewitems border-l-4 border-blue-500 pl-6 py-4 bg-white rounded-lg shadow-md p-4">
-                        <div className="customerinfo flex items-center gap-4 mb-2">
-                            {[...Array(5)].map((_,i) => (
-                                <span key={i} className={`tex-xl ${i < items.rating ? "text-yellow-400" : "text-gray-300"}`}>
-                                    ★
-                                </span>
-                            ))}
-                            </div>
-                        <p className="text-gray-700 mb-4 italic">{items.review}</p>
-                        <div className="flex justify-between items-center">
-                            <div>
-                                <h4 className="font-semibold text-gray-800">{items.name}</h4>
-                                <p className="text-sm text-gray-500">{items.service}</p>
-                            </div>
-                             <span className="text-sm text-gray-400">{items.date}</span>
-                        </div>
+          <div className="reviewscontainer w-[95%] mx-auto rounded-lg shadow-md mt-4 p-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              {reviews.map(items => (
+                <div key={items.id} className="reviewitems flex-1 border-l-4 border-blue-500 pl-6 py-4 bg-white rounded-lg shadow-md">
+                  <div className="customerinfo flex items-center gap-4 mb-2">
+                    {[...Array(5)].map((_,i) => (
+                      <span key={i} className={`text-xl ${i < items.rating ? "text-yellow-400" : "text-gray-300"}`}>
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-4 italic">{items.review}</p>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="font-semibold text-gray-800">{items.name}</h4>
+                      <p className="text-sm text-gray-500">{items.service}</p>
                     </div>
-                ))}
+                    <span className="text-sm text-gray-400">{items.date}</span>
+                  </div>
+                </div>
+              ))}
             </div>
+          </div>
         </div>
     </section>
   )

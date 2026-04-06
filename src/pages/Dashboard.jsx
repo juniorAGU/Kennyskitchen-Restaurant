@@ -113,56 +113,199 @@ useEffect(() => {
         </div>
       </section>  
 
-      <div className="lg:col-span-2">
+           {/* Mobile Layout - Shows only on mobile */}
+<div className="block lg:hidden">
             
-                               {/* another sectction */}
-            <div className="bg-white rounded-xl shadow-md overflow-y-auto h-96">
-              <div className="bg-orange-50 px-6 py-4 border-b border-orange-100">
-                <h2 className="text-xl font-bold text-gray-800">
-                  💰 Unpaid Orders (0)
-                </h2>
-                <p className="text-gray-600 text-sm mt-1">Complete payment to confirm your orders</p>
+  {/* Unpaid Orders Section */}
+  <div className="bg-white rounded-xl shadow-md overflow-hidden mb-4">
+    <div className="bg-orange-50 px-4 py-3 border-b border-orange-100">
+      <h2 className="text-lg font-bold text-gray-800">
+        💰 Unpaid Orders ({pending.length})
+      </h2>
+      <p className="text-gray-600 text-xs mt-1">Complete payment to confirm your orders</p>
+    </div>
+    
+    <div className="p-3 max-h-80 overflow-y-auto">
+      {pending.length === 0 ? (
+        <div className="text-center py-6">
+          <p className="text-gray-500 text-sm">No unpaid orders</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {pending.map(order => (
+            <div key={order.id} className="p-3 border rounded-lg">
+              <p className="font-semibold text-gray-800 text-sm mb-1">
+                {order.items?.map(item => item.name).join(", ")}
+              </p>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-gray-500">Qty: {order.items?.map(item => item.quantity).join(", ")}</span>
+                <span className="inline-block bg-yellow-500 px-2 py-0.5 rounded-lg text-xs text-white">
+                  {order.status}
+                </span>
               </div>
-              <div className="p-12 text-center">
-                <p className="text-gray-500"> unpaid orders</p>
-                {
-                  pending.map(order =>
-                    <div key={order.id} className="mt-4 p-4 border rounded-lg flex items-center justify-around">
-                      <p >{order.items.map(item => item.name)}</p>
-                      <p className='bg-yellow-500 px-1 py-1 rounded-lg'>{order.status}</p>
-                      <p>{order.items.map(item => item.quantity)}</p>
-                      <p>{order.items.map(item => item.subtotal)}</p>
-                    </div>
-                  )
-                }
+              <p className="text-sm font-semibold text-blue-600">
+                ₦{order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Order History Section */}
+  <div className="bg-white rounded-xl shadow-md overflow-hidden">
+    <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+      <h2 className="text-lg font-bold text-gray-800">
+        📋 Order History
+      </h2>
+      <p className="text-gray-600 text-xs mt-1">View all your previous orders</p>
+    </div>
+    
+    <div className="p-3 max-h-80 overflow-y-auto">
+      {orders.length === 0 ? (
+        <div className="text-center py-6">
+          <p className="text-gray-500 text-sm">No orders yet</p>
+          <p className="text-xs text-gray-400 mt-1">Start ordering from our menu</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {orders.map(order => (
+            <div key={order.id} className="p-3 border rounded-lg">
+              <p className="font-semibold text-gray-800 text-sm mb-1">
+                {order.items?.map(item => item.name).join(", ")}
+              </p>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-gray-500">Qty: {order.items?.map(item => item.quantity).join(", ")}</span>
+                <span className={`inline-block px-2 py-0.5 rounded-lg text-xs text-white ${
+                  order.status === 'pending' ? 'bg-yellow-500' :
+                  order.status === 'processing' ? 'bg-blue-500' :
+                  order.status === 'delivered' ? 'bg-green-500' : 'bg-gray-500'
+                }`}>
+                  {order.status}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-sm font-semibold text-blue-600">
+                  ₦{order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}
+                </p>
               </div>
             </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
-                                 {/* {another section} */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden mt-8">
-                  <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                   <h2 className="text-xl font-bold text-gray-800">
-                      📋 Order History
-                    </h2>
-                    <p className="text-gray-600 text-sm mt-1">View all your previous orders</p>
-                  </div>
-                  <div className="p-12 text-center overflow-y-auto h-96">
-                    {
-                      orders.map(order => 
-                         <div key={order.id} className="mt-4 p-4 border rounded-lg flex items-center justify-around">
-                          <p>{order.items.map(item => item.name)}</p>
-                          <p className='bg-yellow-500 px-1 py-1 rounded-lg'>{order.status}</p>
-                          <p>{order.items.map(item => item.quantity)}</p>
-                          <p>{order.items.map(item => item.subtotal)}</p>
-                          <p>Time orderd {order.createdAt}</p>
-                         </div>
+{/* Desktop Layout - Shows only on desktop */}
+                      <div className="hidden lg:block lg:col-span-2">
+                                  
+                        {/* Unpaid Orders Section */}
+                        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                          <div className="bg-orange-50 px-6 py-4 border-b border-orange-100">
+                            <h2 className="text-xl font-bold text-gray-800">
+                              💰 Unpaid Orders ({pending.length})
+                            </h2>
+                            <p className="text-gray-600 text-sm mt-1">Complete payment to confirm your orders</p>
+                          </div>
+                          
+                          <div className="p-4 max-h-96 overflow-y-auto">
+                            {pending.length === 0 ? (
+                              <div className="text-center py-8">
+                                <p className="text-gray-500">No unpaid orders</p>
+                              </div>
+                            ) : (
+                              <div className="space-y-3">
+                                {pending.map(order => (
+                                  <div key={order.id} className="p-3 border rounded-lg">
+                                    <div className="mb-2">
+                                      <p className="font-semibold text-gray-800 text-sm">Items:</p>
+                                      <p className="text-gray-600 text-sm">
+                                        {order.items?.map(item => item.name).join(", ")}
+                                      </p>
+                                    </div>
+                                    <div className="mb-2">
+                                      <span className="inline-block bg-yellow-500 px-2 py-1 rounded-lg text-xs text-white">
+                                        {order.status}
+                                      </span>
+                                    </div>
+                                    <div className="mb-2">
+                                      <p className="text-sm text-gray-600">
+                                        Quantity: {order.items?.map(item => item.quantity).join(", ")}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-semibold text-blue-600">
+                                        Total: ₦{order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
 
-                      )
-                    }
-                    <p className="text-sm text-gray-400 mt-1">Start ordering from our menu</p>
-                  </div>
-                </div>
-            </div>
+                        {/* Order History Section */}
+                        <div className="bg-white rounded-xl shadow-md overflow-hidden mt-8">
+                          <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                            <h2 className="text-xl font-bold text-gray-800">
+                              📋 Order History
+                            </h2>
+                            <p className="text-gray-600 text-sm mt-1">View all your previous orders</p>
+                          </div>
+                          
+                          <div className="p-4 max-h-96 overflow-y-auto">
+                            {orders.length === 0 ? (
+                              <div className="text-center py-8">
+                                <p className="text-gray-500">No orders yet</p>
+                                <p className="text-sm text-gray-400 mt-1">Start ordering from our menu</p>
+                              </div>
+                            ) : (
+                              <div className="space-y-3">
+                                {orders.map(order => (
+                                  <div key={order.id} className="p-3 border rounded-lg">
+                                    <div className="mb-2">
+                                      <p className="font-semibold text-gray-800 text-sm">Items:</p>
+                                      <p className="text-gray-600 text-sm">
+                                        {order.items?.map(item => item.name).join(", ")}
+                                      </p>
+                                    </div>
+                                    <div className="mb-2">
+                                      <span className={`inline-block px-2 py-1 rounded-lg text-xs text-white ${
+                                        order.status === 'pending' ? 'bg-yellow-500' :
+                                        order.status === 'processing' ? 'bg-blue-500' :
+                                        order.status === 'delivered' ? 'bg-green-500' : 'bg-gray-500'
+                                      }`}>
+                                        {order.status}
+                                      </span>
+                                    </div>
+                                    <div className="mb-2">
+                                      <p className="text-sm text-gray-600">
+                                        Quantity: {order.items?.map(item => item.quantity).join(", ")}
+                                      </p>
+                                    </div>
+                                    <div className="mb-2">
+                                      <p className="text-sm font-semibold text-blue-600">
+                                        Total: ₦{order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-xs text-gray-400">
+                                        Ordered: {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
 
 
             
