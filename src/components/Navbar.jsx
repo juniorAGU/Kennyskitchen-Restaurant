@@ -111,15 +111,7 @@ const closetab = () => {
                                         Dashboard
                                     </NavLink >
                             </li>
-                            <li>
-                                    <NavLink  
-                                        to ="/admin" 
-                                        className={({isActive}) => `${isActive ? "bg-blue-400 block px-4 py-3 text-white" : ""} block px-4 py-3 text-gray-700 hover:bg-blue-100 hover:text-blue-600 rounded-lg transition-colors`}
-                                        onClick={closetab}
-                                    >
-                                         Admin Dashboard
-                                    </NavLink >
-                            </li>
+                           
                         </ul>
                     </nav>
                         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
