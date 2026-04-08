@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate} from 'react-router-dom'
 import { useContext, useState,useEffect  } from 'react'
 import { useCart } from '../Context/CartContext';
 import { AdminContext } from '../Context/AdminContext'
@@ -7,6 +7,7 @@ import { auth } from '../Config/Firebase'
 import { collection,getDoc,setDoc,doc,addDoc,getDocs, query, orderBy, deleteDoc,onSnapshot, count, updateDoc,} from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import Uploadpayment from '../components/Uploadpayment';
 import { v4 as uuidv4 } from 'uuid'
 
 
@@ -26,6 +27,9 @@ function Checkout() {
   })
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [toggle, setToggle] = useState(false)
+  const [uploadid, setUploadid] = useState(null)
+  const navigate = useNavigate()
 
   
 
@@ -64,8 +68,9 @@ const total = subtotal + deliveryFee
 
 
 const orderId = uuidv4();
-const handleSubmit = async (e) => {
-  e.preventDefault()
+/*const handleSubmit = async (e) => {
+  e.preventDefault();
+  setToggle(true)
 
 
   if(state.cart.length === 0) {
@@ -112,6 +117,7 @@ const handleSubmit = async (e) => {
         })
         
         console.log(`   ✅ Stock updated! ${cartitem.name}: ${currentStock} → ${newStock}`)
+        navigate("/dashboard")
       } else {
         console.log(`   Product NOT FOUND in Firebase!`)
       }
@@ -141,21 +147,23 @@ const handleSubmit = async (e) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
+    
 
     
     const doceRef = await addDoc(collection(db, "orders"),ordersData)
     console.log("Order placed with ID:", doceRef.id)
-    setDataset({
-      name: "",
-      email: "",
-      phoneNumber: "",
-      deliveryaddress: "",
-      city: "",
-      postalcode: "",
-      payment: "cash",
-      note: ""
-    })
-    clearCart()
+    setUploadid(doceRef.id)
+    // setDataset({
+    //   name: "",
+    //   email: "",
+    //   phoneNumber: "",
+    //   deliveryaddress: "",
+    //   city: "",
+    //   postalcode: "",
+    //   payment: "cash",
+    //   note: ""
+    // })
+    // clearCart()
     alert("your Order is placed succesfully")
   }catch(err){
     console.error(err)
@@ -164,7 +172,7 @@ const handleSubmit = async (e) => {
     
   }
 
-}
+}*/
 
 
 
@@ -204,7 +212,7 @@ const handleSubmit = async (e) => {
           <div className="w-20 h-1 bg-blue-600 mt-2"></div>
           <p className="text-gray-600 mt-2">Complete your order</p>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form>
         <div className="grid lg:grid-cols-3 gap-8">
           
           {/* Left Column - Form */}
@@ -398,7 +406,8 @@ const handleSubmit = async (e) => {
                 </div>
 
                 <button className={`w-full mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 shadow-md ${loading ? "bg-gray-300 cursor-not-allowed" : " "}`}
-                type='submit'
+                type='button'
+                onClick={() => setToggle(true)}
                 disabled={loading}
                 >
                   {loading ? "placing your oreders...." : "Place Order →"}
@@ -411,6 +420,15 @@ const handleSubmit = async (e) => {
             </div>
           </div>
         </div>
+                    {toggle && (
+                    <Uploadpayment 
+                      setToggle={setToggle}
+                      dataset={dataset}  // Pass form data
+                      cart={state.cart}  // Pass cart items
+                      user={user}        // Pass user
+                      clearCart={clearCart}
+                    />
+                  )}
         </form>
       </div>
     </div>
