@@ -12,6 +12,7 @@ function Dashboard() {
   const { users,logout} = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [pending, setPending] = useState([]);
+  console.log('my orders', orders)
 
 
   const navigate = useNavigate()
@@ -221,7 +222,7 @@ useEffect(() => {
                             ) : (
                               <div className="space-y-3">
                                 {pending.map(order => (
-                                  <div key={order.id} className="p-3 border rounded-lg">
+                                  <div key={order.id} className="p-3 border rounded-lg flex justify-around items-center">
                                     <div className="mb-2">
                                       <p className="font-semibold text-gray-800 text-sm">Items:</p>
                                       <p className="text-gray-600 text-sm">
@@ -268,7 +269,7 @@ useEffect(() => {
                             ) : (
                               <div className="space-y-3">
                                 {orders.map(order => (
-                                  <div key={order.id} className="p-3 border rounded-lg">
+                                  <div key={order.id} className="p-3 border rounded-lg flex justify-around items-center">
                                     <div className="mb-2">
                                       <p className="font-semibold text-gray-800 text-sm">Items:</p>
                                       <p className="text-gray-600 text-sm">
@@ -324,24 +325,28 @@ useEffect(() => {
 
               
               <div className="p-6">
+                
                 <div className="space-y-4">
                   <div className="flex items-center justify-between py-2 border-b border-gray-100">
                     <span className="text-gray-600">📞 Phone</span>
-                    <span className="font-semibold text-gray-800">+234 XXX XXX XXXX</span>
+                    <span className="font-semibold text-gray-800">{pending.map(order => order.customer?.phoneNumber).join(", ").slice(0, 12)}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-100">
                     <span className="text-gray-600">📍 Location</span>
-                    <span className="font-semibold text-gray-800">Your City, Country</span>
+                    <span className="font-semibold text-gray-800">{pending.map(order => order.customer?.city).join(", ").slice(0, 12)}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-100">
                     <span className="text-gray-600">📅 Member Since</span>
-                    <span className="font-semibold text-gray-800">Month Year</span>
+                    <span className="font-semibold text-gray-800">{users.createdAt ? new Date(users.createdAt).toLocaleDateString() : 'N/A'}</span>
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <span className="text-gray-600">⭐ Total Orders</span>
-                    <span className="font-semibold text-gray-800">0</span>
+                    <span className="font-semibold text-gray-800">{orders.length}</span>
                   </div>
                 </div>
+                  
+                
+                
 
                 {/* ==================== SECTION 4C: ORDER BUTTON ==================== */}
                 <div className="mt-6 pt-4 border-t border-gray-200">

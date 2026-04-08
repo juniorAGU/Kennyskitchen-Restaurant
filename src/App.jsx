@@ -27,12 +27,14 @@ import AdminMessage from './Adminpages/AdminMessage'
 import ForgotPassword from './pages/Forgetpassword'
 import RoleRouter from './pages/Redirect'
 import Checkout from './pages/Checkout'
+import emailjs from '@emailjs/browser'
+
 
 
 
 
 function App() {
-
+emailjs.init('g6k3a4SWme-oTVKk3')
   const router = createBrowserRouter([
     {
       path: '/',

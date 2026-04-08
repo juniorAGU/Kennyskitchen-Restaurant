@@ -4,12 +4,16 @@ import { useState } from 'react'
 import { db, storage } from '../Config/Firebase'
 import { collection, addDoc, doc, updateDoc, getDoc } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import ReceiptModal from './Recipt'
 import { v4 as uuidv4 } from 'uuid'
+
 
 function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
   const [loading, setLoading] = useState(false)
   const [proof, setProof] = useState(null)  
   const [uploading, setUploading] = useState(false)
+  const [showReceipt, setShowReceipt] = useState(false)
+  const [currentOrder, setCurrentOrder] = useState(null)
   const navigate = useNavigate()
 
   // Calculate totals
@@ -140,7 +144,7 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
             customerConfirmedAt: new Date().toISOString()
           })
           
-          alert("Order placed! Payment proof uploaded. Admin will verify your payment.")
+          alert(" Order placed successfully!!!  Your payment is being Verified.")
         } catch (uploadError) {
           console.error("Upload error:", uploadError)
           alert("Error uploading payment proof, but order was created. Please contact support.")
@@ -149,10 +153,10 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
         alert("Order placed successfully!")
       }
 
-      
+      setCurrentOrder(ordersData)
+      setShowReceipt(true)
       clearCart()
-      setToggle(false)
-      navigate('/dashboard')
+      
 
     } catch(err) {
       console.error("Order error:", err)
@@ -162,6 +166,7 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
       setUploading(false)
     }
   }
+ 
 
   return (
     <section>
@@ -213,7 +218,12 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
                 </p>
               </div>
             )}
-            
+            {showReceipt && currentOrder && (
+                  <ReceiptModal 
+                   order={currentOrder}
+                  setShowReceipt={setShowReceipt}
+                  />
+              )}
           
             <button
               onClick={handlePlaceOrder}
