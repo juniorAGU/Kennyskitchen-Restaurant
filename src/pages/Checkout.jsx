@@ -13,7 +13,6 @@ import { v4 as uuidv4 } from 'uuid'
 
 function Checkout() {
   const { state, clearCart} = useCart();
-  console.log("Checkout cart state:", state.cart);
 
   const [dataset, setDataset] = useState({
     name: "",
@@ -55,11 +54,15 @@ const items = state.cart.map(item => ({
       }))
 const handleChange = (e) => {
   const {name,value} = e.target;
+  // const cleanValue = value.trim()
 
-  const cleanValue = value.replace(/["']/g, '').trim()
+
+  
+
+  // const cleanValue = value.replace(/["']/g, '').trim()
 
   setDataset({...dataset,
-    [name]: cleanValue
+    [name]: value
   })
 }
 const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.cartquantity), 0)

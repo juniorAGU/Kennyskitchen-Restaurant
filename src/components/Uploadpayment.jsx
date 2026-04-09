@@ -45,9 +45,13 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
       setProof(file)
     }
   }
+console.log("Dataset in Uploadpayment:", dataset)
 
   // Function to upload image and create order
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     
     if(dataset.name === "" || dataset.email === "" || dataset.phoneNumber === "" || 
        dataset.deliveryaddress === "" || dataset.city === "" || dataset.postalcode === ""){
@@ -127,6 +131,11 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
       const docRef = await addDoc(collection(db, "orders"), ordersData)
       const newOrderId = docRef.id
 
+      const orderIdwith = {
+        id: newOrderId,
+        ...ordersData
+      }
+
       
       let imageUrl = null
       if(dataset.payment === "transfer"  && proof) {
@@ -153,7 +162,7 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
         alert("Order placed successfully!")
       }
 
-      setCurrentOrder(ordersData)
+      setCurrentOrder(orderIdwith)
       setShowReceipt(true)
       clearCart()
       
@@ -222,6 +231,7 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
                   <ReceiptModal 
                    order={currentOrder}
                   setShowReceipt={setShowReceipt}
+                  dataset = {dataset}
                   />
               )}
           

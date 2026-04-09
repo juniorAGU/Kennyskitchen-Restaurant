@@ -6,13 +6,18 @@ import { collection,getDoc,setDoc,doc,addDoc,getDocs, query, orderBy,where, dele
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { useState,useEffect,useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import OtpVerificationModal from '../components/OtpVerification'
+
 
 
 function Dashboard() {
   const { users,logout} = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [pending, setPending] = useState([]);
-  console.log('my orders', orders)
+  const [openotpmodal, setOpenOtpModal] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState(null)
+
+  
 
 
   const navigate = useNavigate()
@@ -54,7 +59,7 @@ useEffect(() => {
     setPending(pendingList)
   })
 },[])
-
+console.log("the orders",selectedOrder)
 
    console.log("the pending orders",pending)
 
@@ -125,7 +130,7 @@ useEffect(() => {
       </h2>
       <p className="text-gray-600 text-xs mt-1">Complete payment to confirm your orders</p>
     </div>
-    
+  
     <div className="p-3 max-h-80 overflow-y-auto">
       {pending.length === 0 ? (
         <div className="text-center py-6">
@@ -215,6 +220,9 @@ useEffect(() => {
                           </div>
                           
                           <div className="p-4 max-h-96 overflow-y-auto">
+
+                            
+
                             {pending.length === 0 ? (
                               <div className="text-center py-8">
                                 <p className="text-gray-500">No unpaid orders</p>
@@ -222,12 +230,20 @@ useEffect(() => {
                             ) : (
                               <div className="space-y-3">
                                 {pending.map(order => (
-                                  <div key={order.id} className="p-3 border rounded-lg flex justify-around items-center">
+                                  <div key={order.id} className="p-3 border rounded-lg flex justify-between items-center">
                                     <div className="mb-2">
                                       <p className="font-semibold text-gray-800 text-sm">Items:</p>
                                       <p className="text-gray-600 text-sm">
                                         {order.items?.map(item => item.name).join(", ")}
                                       </p>
+                                       <button onClick={() => {
+                                          setSelectedOrder(order)  // You need to add this state
+                                          setOpenOtpModal(true)
+                                       }}
+                                          className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm cursor-pointer"
+                                            >
+                                             Verify OTP
+                                        </button>
                                     </div>
                                     <div className="mb-2">
                                       <span className="inline-block bg-yellow-500 px-2 py-1 rounded-lg text-xs text-white">
@@ -357,14 +373,26 @@ useEffect(() => {
                     🍽️ Order More Food
                   </Link>
                 </div>
-                {/* ==================== END OF SECTION 4C ==================== */}
+                
                 
               </div>
-              {/* ==================== END OF SECTION 4B ==================== */}
-              
             </div>
           </div>
 
+           {openotpmodal && selectedOrder && (
+      <OtpVerificationModal
+        order={selectedOrder}
+        onClose={() => {
+          setOpenOtpModal(false)
+          setSelectedOrder(null)
+        }}
+        onVerified={() => {
+          setOpenOtpModal(false)
+          setSelectedOrder(null)
+        }}
+      />
+    )}
+              
     </section>
   )
 }

@@ -1,29 +1,35 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { generateOTP,sendOtpByEmail } from './Otp'
+import { generateOTP,sendOtpByEmail,storeOTPInFirestore } from './Otp'
 
-function ReceiptModal({ order, setShowReceipt }) {
+function ReceiptModal({ order, setShowReceipt, dataset }) {
   const navigate = useNavigate()
 
 
+    const handleTestOTP = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-
-    const handleTestOTP = async () => {
-        console.log("1. Function started")
-    console.log("2. Customer email:", order.customer?.email)
-    console.log("3. Customer name:", order.customer?.name)
-    const otp = generateOTP()
-    console.log("4. Generated OTP:", otp)
-    const result = await sendOtpByEmail(order.customer?.email, otp, order.customer?.name)
-    console.log("7. Result is true, showing alert")
+    try {
+        const otp = generateOTP()
+        console.log("Generated OTP:", otp)
+        
+        const result = await sendOtpByEmail(dataset.email, otp, dataset.name)
+        console.log("Email send result:", result)
     
-    if(result) {
-       alert('OTP sent! Check your email')
-       navigate("/dashboard")
-    } else {
-      return alert('Failed to send')
+        if(result) {
+            
+            await storeOTPInFirestore(order.id, otp)
+            console.log("OTP stored in Firestore for order ID:", order.id)
+            alert('OTP sent! Check your email')
+            navigate("/dashboard")
+        } else {
+            alert('Failed to send')
+        }
+    } catch(err) {
+        console.error('OTP Error:', err)
     }
-  }
+}
 
   const handlePrint = () => {
     window.print()
@@ -244,3 +250,4 @@ function ReceiptModal({ order, setShowReceipt }) {
 }
 
 export default ReceiptModal
+
