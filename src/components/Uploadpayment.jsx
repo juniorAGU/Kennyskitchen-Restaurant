@@ -101,6 +101,7 @@ console.log("Dataset in Uploadpayment:", dataset)
       const ordersData = {
         orderId: orderId,
         userID: user.uid,
+        deliverystatus: "pending",
         customer: {
           name: dataset.name,
           email: dataset.email,

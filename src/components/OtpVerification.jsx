@@ -1,15 +1,62 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect} from 'react'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../Config/Firebase'
-import { verifyOTP,generateOTP,storeOTPInFirestore } from './Otp'
+import { verifyOTP,generateOTP,storeOTPInFirestore,sendOtpByEmail} from './Otp'
 
 
 function OTPVerificationModal({ order, onClose, onVerified }) {
   const [otpInput, setOtpInput] = useState('')
   const [verificationMessage, setVerificationMessage] = useState('')
-  const [isVerifying, setIsVerifying] = useState(false)
+  const [isVerifying, setIsVerifying,] = useState(false)
+  const [isgenerating, setIsgeneratin ] = useState(false);
+  const [cooldown, setCooldown] = useState(0)
 
+  useEffect(() => {
+    if(cooldown > 0){
+      const timer = setTimeout(() => {
+        setCooldown(cooldown - 1)
+      },1000)
+
+      return () => clearTimeout(timer)
+    }
+  },[cooldown])
   
+  const handleGenerateOtp = async () => {
+
+    if (cooldown > 0) {
+      setVerificationMessage(` Please wait ${cooldown} seconds before requesting again`)
+      return
+    }
+
+    if (isgenerating) {
+      return
+    }
+
+
+    try{
+
+      
+
+      setIsgeneratin(true)
+      const otp =  generateOTP();
+      const send = await sendOtpByEmail(order.customer?.email, otp, order.customer?.name)
+      const saveToFirebase = await storeOTPInFirestore(order.id, otp)
+
+      if(!saveToFirebase){
+         setVerificationMessage(" OTP sent but failed to save. Please try again.")
+         return 
+      }
+      setCooldown(50)
+      setVerificationMessage(" OTP sent to " + order.customer?.email)
+      alert("check your email for your code")
+
+    }catch(err){
+      console.error("check your code something is wrong", err)
+        setVerificationMessage(" Something went wrong. Please try again.")
+    }finally{
+      setIsgeneratin(false)
+    }
+  }
 
   const handleVerifyOTP = async () => {
     if (!otpInput || otpInput.length !== 6) {
@@ -23,27 +70,26 @@ function OTPVerificationModal({ order, onClose, onVerified }) {
     const result =  await verifyOTP(order.id, otpInput)
     
     if (result.valid) {
-      setVerificationMessage("✅ " + result.message)
+      setVerificationMessage( result.message)
       
       // Update order status in Firebase
       try {
         const orderRef = doc(db, "orders", order.id)
         await updateDoc(orderRef, {
           deliveryStatus: "delivered",
-          status: "delivered",
           deliveredAt: new Date().toISOString(),
           verifiedBy: "customer"
         })
         
-        alert("✅ Delivery confirmed! Thank you for your order.")
+        alert(" Delivery confirmed! Thank you for your order.")
         onVerified() // Callback to refresh orders
         onClose() // Close modal
       } catch (error) {
         console.error("Failed to update order:", error)
-        setVerificationMessage("❌ Failed to update order status. Please try again.")
+        setVerificationMessage(" Failed to update order status. Please try again.")
       }
     } else {
-      setVerificationMessage("❌ " + result.message)
+      setVerificationMessage(result.message)
     }
     
     setIsVerifying(false)
@@ -106,12 +152,18 @@ function OTPVerificationModal({ order, onClose, onVerified }) {
                 : 'bg-green-600 hover:bg-green-700 text-white'
             }`}
           >
-            {isVerifying ? "Verifying..." : "✅ Confirm Delivery"}
+            {isVerifying ? "Verifying..." : " Confirm Delivery"}
           </button>
 
           <p className="text-xs text-gray-400 text-center mt-4">
             Enter the OTP code sent to your email to confirm delivery
           </p>
+          <button className={`px-1 py-1 bg-green-500 font-semibold text-white rounded-md ${isgenerating ? "bg-gray-300 cursor-not-allowed " : "bg-blue-600 hover:bg-blue-700 text-white "}`}
+          onClick={handleGenerateOtp}
+          disabled={isVerifying}
+          >
+            {isgenerating ?  "Requesting..." : cooldown > 0 ? `Wait ${cooldown}s to request again` : " Request OTP Code"}
+          </button>
         </div>
       </div>
     </div>

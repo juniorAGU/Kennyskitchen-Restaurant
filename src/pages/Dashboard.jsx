@@ -139,19 +139,43 @@ console.log("the orders",selectedOrder)
       ) : (
         <div className="space-y-2">
           {pending.map(order => (
-            <div key={order.id} className="p-3 border rounded-lg">
-              <p className="font-semibold text-gray-800 text-sm mb-1">
+            <div key={order.id} className="p-3 border rounded-lg  flex justify-between items-center">
+
+
+              <div className='flex flex-col items-center justify-between'>
+
+                <p className="font-semibold text-gray-800 text-sm mb-1">
                 {order.items?.map(item => item.name).join(", ")}
-              </p>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs text-gray-500">Qty: {order.items?.map(item => item.quantity).join(", ")}</span>
-                <span className="inline-block bg-yellow-500 px-2 py-0.5 rounded-lg text-xs text-white">
-                  {order.status}
-                </span>
+                </p>
+
+                <p className="text-xs text-gray-500">Qty: {order.items?.map(item => item.quantity).join(", ")}</p>
+
               </div>
-              <p className="text-sm font-semibold text-blue-600">
+
+
+              <div>
+                <button onClick={() => {
+                    setSelectedOrder(order)  // You need to add this state
+                    setOpenOtpModal(true)
+                    }}
+                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm cursor-pointer"
+                >
+                Verify OTP
+              </button>
+              </div>
+
+              <div className='flex flex-col items-center justify-between'> 
+                <p className="inline-block bg-yellow-500 px-2 py-0.5 rounded-lg text-xs text-white">
+                  {order.status}
+                </p>
+
+                <p className="text-sm font-semibold text-blue-600">
                 ₦{order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}
               </p>
+
+              </div>
+              
+              
             </div>
           ))}
         </div>

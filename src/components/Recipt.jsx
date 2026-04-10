@@ -1,9 +1,11 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { generateOTP,sendOtpByEmail,storeOTPInFirestore } from './Otp'
+import { useState } from 'react'
 
 function ReceiptModal({ order, setShowReceipt, dataset }) {
   const navigate = useNavigate()
+  const [isgenerating, setIsgenerating] = useState(false)
 
 
     const handleTestOTP = async (e) => {
@@ -11,6 +13,8 @@ function ReceiptModal({ order, setShowReceipt, dataset }) {
     e.stopPropagation();
 
     try {
+      setIsgenerating(true)
+
         const otp = generateOTP()
         console.log("Generated OTP:", otp)
         
@@ -28,6 +32,8 @@ function ReceiptModal({ order, setShowReceipt, dataset }) {
         }
     } catch(err) {
         console.error('OTP Error:', err)
+    }finally{
+      setIsgenerating(false)
     }
 }
 
@@ -229,10 +235,11 @@ function ReceiptModal({ order, setShowReceipt, dataset }) {
             🖨️ Print Receipt
           </button>
           <button
+          disabled ={isgenerating}
             onClick={handleTestOTP}
-            className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-colors"
+            className={`flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-colors ${isgenerating ? "cursor-not-allowed bg-gray-300" : " "}`}
           >
-            Delivery Number
+            {isgenerating ? "generating OTP..." : "Delivery Number"}
           </button>
           <button
             onClick={() => {

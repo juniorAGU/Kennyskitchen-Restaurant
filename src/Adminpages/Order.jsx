@@ -88,8 +88,6 @@ function AdminOrders() {
         return { bg: 'bg-yellow-100', text: 'text-yellow-700', label: ' Pending' }
       case 'unpaid':
         return { bg: 'bg-blue-100', text: 'text-blue-700', label: ' Processing' }
-      case 'delivered':
-        return { bg: 'bg-purple-100', text: 'text-purple-700', label: ' Delivered' }
       default:
         return { bg: 'bg-red-600', text: 'text-gray-100', label: ' Unknown' }
     }
@@ -186,6 +184,7 @@ function AdminOrders() {
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Total</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Payment</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Delivery</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Payments</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Actions</th>
                 </tr>
@@ -197,7 +196,7 @@ function AdminOrders() {
                   return (
                     <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-medium text-gray-800">{order.id}</p>
+                        <p className="font-medium text-gray-800">{order.id.slice(0,3) + "***" + order.id.slice(-3)}</p>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
                         {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}
@@ -230,6 +229,12 @@ function AdminOrders() {
                         <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${statusBadge.bg} ${statusBadge.text}`}>
                           {statusBadge.label}
                         </span>
+                      </td>
+
+                      <td>
+                        {order.deliveryStatus  === "delivered" ? (<span className='bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs'>delivered</span>) : ( <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
+                               not delivered
+                            </span>)}
                       </td>
                       
                       {/* NEW: Payment Proof Column */}
@@ -269,7 +274,6 @@ function AdminOrders() {
                             <option value="pending"> Pending</option>
                             <option value="unpaid"> unpaid</option>
                             <option value="paid"> Paid</option>
-                            <option value="delivered"> Delivered</option>
                           </select>
                           
                           <button 
@@ -318,53 +322,53 @@ function AdminOrders() {
 
       {/* Payment Proof Modal */}
       {showProofModal && selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-gray-800">Payment Proof</h3>
-              <button
-                onClick={() => setShowProofModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">Order ID: <strong>{selectedOrder.id}</strong></p>
-              <p className="text-sm text-gray-600 mb-4">Customer: <strong>{selectedOrder.customer?.name}</strong></p>
-              {selectedOrder.paymentProof && (
-                <div className="border rounded-lg p-4 bg-gray-50">
-                  <img 
-                    src={selectedOrder.paymentProof} 
-                    alt="Payment Proof" 
-                    className="max-w-full h-auto rounded-lg"
-                  />
-                </div>
-              )}
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => confirmPayment(selectedOrder.id)}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold"
-              >
-                ✅ Confirm Payment
-              </button>
-              <button
-                onClick={() => rejectPayment(selectedOrder.id)}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold"
-              >
-                ❌ Reject Payment
-              </button>
-              <button
-                onClick={() => setShowProofModal(false)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold"
-              >
-                Close
-              </button>
-            </div>
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6 max-h-[90vh] overflow-y-auto">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-bold text-gray-800">Payment Proof</h3>
+        <button
+          onClick={() => setShowProofModal(false)}
+          className="text-gray-500 hover:text-gray-700"
+        >
+          ✕
+        </button>
+      </div>
+      <div className="mb-4">
+        <p className="text-sm text-gray-600 mb-2">Order ID: <strong>{selectedOrder.id}</strong></p>
+        <p className="text-sm text-gray-600 mb-4">Customer: <strong>{selectedOrder.customer?.name}</strong></p>
+        {selectedOrder.paymentProof && (
+          <div className="border rounded-lg p-4 bg-gray-50 flex items-center justify-center">
+            <img 
+              src={selectedOrder.paymentProof} 
+              alt="Payment Proof" 
+              className="max-w-full max-h-96 w-auto h-auto object-contain rounded-lg"
+            />
           </div>
-        </div>
-      )}
+        )}
+      </div>
+      <div className="flex gap-3">
+        <button
+          onClick={() => confirmPayment(selectedOrder.id)}
+          className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold"
+        >
+          ✅ Confirm Payment
+        </button>
+        <button
+          onClick={() => rejectPayment(selectedOrder.id)}
+          className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold"
+        >
+          ❌ Reject Payment
+        </button>
+        <button
+          onClick={() => setShowProofModal(false)}
+          className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   )
 }
