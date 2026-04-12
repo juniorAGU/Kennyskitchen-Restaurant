@@ -16,12 +16,9 @@ emailjs.init('g6k3a4SWme-oTVKk3')
     
     
     const cleanEmail = String(email).trim()
-    console.log("4. Clean email:", cleanEmail)
+
     
-    /*if (!cleanEmail || cleanEmail === "" || cleanEmail === "undefined") {
-        console.error("❌ Email is invalid!")
-        return false
-    }*/
+    
 
 
 
@@ -34,7 +31,7 @@ emailjs.init('g6k3a4SWme-oTVKk3')
     }
 
     if (!email) {
-        console.error("❌ No email address provided!")
+    
         return false
     }
 
@@ -57,7 +54,7 @@ emailjs.init('g6k3a4SWme-oTVKk3')
         
         const otpsCollection = collection(db, "otps");
         
-        //  Then reference the document within that collection
+      
         const otdataRef = doc(otpsCollection, orderId);
         
         await setDoc(otdataRef,{
@@ -120,7 +117,6 @@ export const verifyOTP = async (orderId, userOTP) => {
         return { valid: true, message: "OTP verified successfully!" }
         
     } catch (error) {
-        console.error("Error verifying OTP:", error)
         return { valid: false, message: "Error verifying OTP. Please try again." }
     }
 }

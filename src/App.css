@@ -14,3 +14,20 @@
     pointer-events: auto ;
   }
 }
+.slider{
+  transition: all 0.5s linear;
+  animation-name: slide;
+  animation-duration: 8s;
+  /* animation-timing-function: 4s; */
+  animation-direction: normal;
+}
+@keyframes slide {
+  from{
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to{
+    opacity: 0 ;
+    transform: translateX(-100px);
+  }
+}

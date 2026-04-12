@@ -14,6 +14,7 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
   const [uploading, setUploading] = useState(false)
   const [showReceipt, setShowReceipt] = useState(false)
   const [currentOrder, setCurrentOrder] = useState(null)
+  const [message, setMessage] = useState(null)
   const navigate = useNavigate()
 
   // Calculate totals
@@ -28,6 +29,18 @@ function Uploadpayment({ setToggle, dataset, cart, user, clearCart }) {
     quantity: item.cartquantity,
     subtotal: item.price * item.cartquantity
   }))
+
+  const showMessages = (message,type) => {
+    setMessage( { message, type} )
+    setTimeout(() => {
+    setMessage(null)
+  }, 3000);
+}
+    const typeColor = {
+      success : "bg-green-600",
+      error: "bg-yellow-500",
+      faild : "bg-red-600"
+    }
 
   
   const handleImageSelect = (e) => {
@@ -55,23 +68,23 @@ console.log("Dataset in Uploadpayment:", dataset)
     
     if(dataset.name === "" || dataset.email === "" || dataset.phoneNumber === "" || 
        dataset.deliveryaddress === "" || dataset.city === "" || dataset.postalcode === ""){
-      alert("Please ensure you put all your details")
+      showMessages("Please ensure you put all your details !!", "faild")
       return
     }
 
     if(!user){
-      alert("Something went wrong. Please login again.")
+      showMessages("Something went wrong. Please login again.", "error")
       return
     }
 
     if(cart.length === 0) {
-      alert("Your cart is empty")
+      showMessages("Your cart is empty !!!", "error")
       return
     }
 
     
     if(dataset.payment === "transfer" && !proof) {
-      alert("Please upload your payment proof image")
+      showMessages("Please upload your payment proof image !!!", "error")
       return
     }
 
@@ -154,13 +167,13 @@ console.log("Dataset in Uploadpayment:", dataset)
             customerConfirmedAt: new Date().toISOString()
           })
           
-          alert(" Order placed successfully!!!  Your payment is being Verified.")
+          showMessages(" Order placed successfully!!!  Your payment is being Verified.","success")
         } catch (uploadError) {
           console.error("Upload error:", uploadError)
-          alert("Error uploading payment proof, but order was created. Please contact support.")
+          showMessages("Error uploading payment proof, but order was created. Please contact support.","error")
         }
       } else {
-        alert("Order placed successfully!")
+        showMessages("Order placed successfully!","success")
       }
 
       setCurrentOrder(orderIdwith)
@@ -170,7 +183,7 @@ console.log("Dataset in Uploadpayment:", dataset)
 
     } catch(err) {
       console.error("Order error:", err)
-      alert("Error placing order: " + err.message)
+      showMessages("Error placing order: " + err.message,"success")
     } finally {
       setLoading(false)
       setUploading(false)
@@ -262,6 +275,11 @@ console.log("Dataset in Uploadpayment:", dataset)
           </div>
         </div>
       </div>
+      {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50 ${typeColor[message.type]}`}>
+          <h2>{message.message}</h2>
+        </div>
+      }
     </section>
   )
 }

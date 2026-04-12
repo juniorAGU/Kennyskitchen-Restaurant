@@ -7,6 +7,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 function Contact() {
   const navigate = useNavigate();
+  const [message, setMessage] = useState(null)
   const [forms, setForms] = useState({
     name: "",
     email: "",
@@ -14,7 +15,19 @@ function Contact() {
     message: "",
     loading: false
   })
-  
+
+  const showMessages = (message,type) => {
+    setMessage( { message, type} )
+    setTimeout(() => {
+    setMessage(null)
+  }, 3000);
+}
+    const typeColor = {
+      success : "bg-green-600",
+      error: "bg-yellow-500",
+      faild : "bg-red-600"
+    }
+
   const handleChange = (e)=> {
     const { name, value} = e.target;
 
@@ -30,7 +43,7 @@ function Contact() {
 
 
       if(forms.name === "" || forms.email === "" || forms.subject === "" || forms.message === ""){
-      alert("put your details")
+      showMessages("Ensure your details are filled !!!","faild")
       setForms({...forms, loading: false})
       return
     }
@@ -58,10 +71,10 @@ function Contact() {
       subject: "",
       message: "",
     })
-    alert("message successfully sent")
+    showMessages("message successfully sent !!!!", "success")
     navigate("/")
     }catch(err){
-        alert("something went wrong")
+        showMessages("something went wrong !!!","error")
         console.error(err)
     }finally{
       setForms({
@@ -222,12 +235,17 @@ function Contact() {
                     <span className="font-semibold text-blue-600">Note:</span> Last orders taken 30 minutes before closing
                   </p>
                 </div>
+                 {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50 ${typeColor[message.type]}`}>
+          <h2>{message.message}</h2>
+        </div>
+      }
               </div>
             </div>
           </div>
         </div>
       </section>
-
+     
     </section>
   )
 }

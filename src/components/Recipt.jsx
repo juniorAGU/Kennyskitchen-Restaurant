@@ -6,6 +6,20 @@ import { useState } from 'react'
 function ReceiptModal({ order, setShowReceipt, dataset }) {
   const navigate = useNavigate()
   const [isgenerating, setIsgenerating] = useState(false)
+  const [message, setMessage] = useState(null)
+
+
+  const showMessages = (message,type) => {
+    setMessage( { message, type} )
+    setTimeout(() => {
+    setMessage(null)
+  }, 3000);
+}
+    const typeColor = {
+      success : "bg-green-600",
+      error: "bg-yellow-500",
+      faild : "bg-red-600"
+    }
 
 
     const handleTestOTP = async (e) => {
@@ -25,10 +39,10 @@ function ReceiptModal({ order, setShowReceipt, dataset }) {
             
             await storeOTPInFirestore(order.id, otp)
             console.log("OTP stored in Firestore for order ID:", order.id)
-            alert('OTP sent! Check your email')
+            showMessages('OTP sent! Check your email !!',"success")
             navigate("/dashboard")
         } else {
-            alert('Failed to send')
+            showMessages('Failed to send',"faild")
         }
     } catch(err) {
         console.error('OTP Error:', err)
@@ -252,6 +266,11 @@ function ReceiptModal({ order, setShowReceipt, dataset }) {
           </button>
         </div>
       </div>
+      {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50 ${typeColor[message.type]}`}>
+          <h2>{message.message}</h2>
+        </div>
+      }
     </div>
   )
 }

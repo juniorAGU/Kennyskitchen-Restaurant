@@ -5,6 +5,7 @@ import { collection,getDoc,setDoc,doc,addDoc,getDocs, query, orderBy, deleteDoc,
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 function Editusers( {isopen, isclosed, users,selecteduser} ) {
+  const [message, setMessage] = useState(null)
     const [dataset, setDataset] = useState({
         name: "",
         email: "",
@@ -33,6 +34,18 @@ function Editusers( {isopen, isclosed, users,selecteduser} ) {
         }) 
     }
 
+    const showMessages = (message,type) => {
+    setMessage( { message, type} )
+    setTimeout(() => {
+    setMessage(null)
+  }, 3000);
+  }
+    const typeColor = {
+      success : "bg-green-600",
+      error: "bg-yellow-500",
+      faild : "bg-red-600"
+    }
+
 
     const handdleSubmit = async (e) => {
         e.preventDefault()
@@ -48,7 +61,7 @@ function Editusers( {isopen, isclosed, users,selecteduser} ) {
         try{
 
             if(dataset.name === "" || dataset.email === "" || dataset.phoneNumber === "" || dataset.role === ""){
-                alert("please ensure that you put all your details")
+                showMessages("please ensure that you put all your details !!!","faild")
                 return
             }
 
@@ -59,7 +72,7 @@ function Editusers( {isopen, isclosed, users,selecteduser} ) {
 
 
 
-            alert(`you have successfully updated ${users.name} profile`)
+            showMessages(`you have successfully updated ${users.name} profile`,"success")
             isclosed()
         }catch(err){
             console.error()
@@ -159,6 +172,11 @@ function Editusers( {isopen, isclosed, users,selecteduser} ) {
           </div>
         </form>
       </div>
+      {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50 ${typeColor[message.type]}`}>
+          <h2>{message.message}</h2>
+        </div>
+      }
     </div>
   )
 }

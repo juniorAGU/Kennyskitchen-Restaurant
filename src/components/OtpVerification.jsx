@@ -10,6 +10,7 @@ function OTPVerificationModal({ order, onClose, onVerified }) {
   const [isVerifying, setIsVerifying,] = useState(false)
   const [isgenerating, setIsgeneratin ] = useState(false);
   const [cooldown, setCooldown] = useState(0)
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     if(cooldown > 0){
@@ -21,6 +22,20 @@ function OTPVerificationModal({ order, onClose, onVerified }) {
     }
   },[cooldown])
   
+
+  const showMessages = (message,type) => {
+    setMessage( { message, type} )
+    setTimeout(() => {
+    setMessage(null)
+  }, 3000);
+}
+    const typeColor = {
+      success : "bg-green-600",
+      error: "bg-yellow-500",
+      faild : "bg-red-600"
+    }
+
+
   const handleGenerateOtp = async () => {
 
     if (cooldown > 0) {
@@ -48,7 +63,7 @@ function OTPVerificationModal({ order, onClose, onVerified }) {
       }
       setCooldown(50)
       setVerificationMessage(" OTP sent to " + order.customer?.email)
-      alert("check your email for your code")
+      showMessages("check your email for your code !!!", "success")
 
     }catch(err){
       console.error("check your code something is wrong", err)
@@ -81,7 +96,7 @@ function OTPVerificationModal({ order, onClose, onVerified }) {
           verifiedBy: "customer"
         })
         
-        alert(" Delivery confirmed! Thank you for your order.")
+        showMessages(" Delivery confirmed! Thank you for your order !!.", "success")
         onVerified() // Callback to refresh orders
         onClose() // Close modal
       } catch (error) {
@@ -166,6 +181,11 @@ function OTPVerificationModal({ order, onClose, onVerified }) {
           </button>
         </div>
       </div>
+      {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50 ${typeColor[message.type]}`}>
+          <h2>{message.message}</h2>
+        </div>
+      }
     </div>
   )
 }

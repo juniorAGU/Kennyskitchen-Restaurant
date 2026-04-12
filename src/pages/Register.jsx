@@ -1,5 +1,5 @@
 import React from 'react'
-import { useReducer, } from 'react'
+import { useReducer,useState } from 'react'
 import { useContext } from 'react'
 import { AuthContext } from '../Context/AuthProvider'
 import { Link,useNavigate } from 'react-router-dom'
@@ -13,6 +13,7 @@ const initialState = {
   loading: false
 }
 function Register() {
+  const [messages, setMessages] = useState(null)
 
 const navigate = useNavigate();
 
@@ -39,6 +40,19 @@ const [state, dispatch] = useReducer(reducer, initialState);
 
 const {register} = useContext(AuthContext);
 
+
+const showMessages = (message,type) => {
+  setMessages( { message, type} )
+  setTimeout(() => {
+    setMessages(null)
+  }, 3000);
+}
+const typeColor = {
+  success : "bg-green-600",
+  error: "bg-yellow-500",
+  faild : "bg-red-600"
+}
+
 const handlechange = (e) => {
   const {name,value} = e.target;
   dispatch({
@@ -53,16 +67,16 @@ const handleSubmite = async (e)=>{
   try{
 
     if(state.name === "" || state.email === "" || state.password === "" || state.confirmPassword === ""){
-    alert("Please fill in all fields")
+    showMessages("Please fill in all fields !!!","faild")
     return
   }
  if(state.password.length < 8){
-    alert("Password must be at least 8 characters")
+    showMessages("Password must be at least 8 characters !!!","error")
     return
   }
 
   if(state.password !== state.confirmPassword){
-    alert("Password do not match")
+    showMessages("Password do not match !!!","error")
      return
    }
 
@@ -82,6 +96,7 @@ const handleSubmite = async (e)=>{
    const success = await register(newData);
 
    if(success){
+    showMessages("Registeration successfull !!!", "success")
     navigate("/")
   
     dispatch({type: "RESET_FORM"})
@@ -171,6 +186,11 @@ const handleSubmite = async (e)=>{
           </Link>
         </p>
       </div>
+      {
+        messages && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded ${typeColor[messages.type]}`}>
+          <h2>{messages.message}</h2>
+        </div>
+      }
 
     </section>
   )

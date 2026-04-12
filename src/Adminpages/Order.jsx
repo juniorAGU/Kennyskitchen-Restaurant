@@ -12,6 +12,7 @@ function AdminOrders() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [showProofModal, setShowProofModal] = useState(false)
+  const [message,setMessage] = useState(null);
   console.log("my selection values",status1)
 
   useEffect(() => {
@@ -39,14 +40,27 @@ function AdminOrders() {
     return order.status === filterStatus
   })
 
+
+  const showMessages = (message,type) => {
+    setMessage( { message, type} )
+    setTimeout(() => {
+    setMessage(null)
+  }, 3000);
+}
+    const typeColor = {
+      success : "bg-green-600",
+      error: "bg-yellow-500",
+      faild : "bg-red-600"
+    }
+
   const hansleOrderStatusChange = async (orderId) => {
     try {
       const orderRef = doc(db, "orders", orderId)
       await updateDoc(orderRef, { status: status1,paymentStatus: status1, updatedAt: new Date().toISOString() })
-      alert("Order status updated successfully!")
+      showMessages("Order status updated successfully!","success")
     } catch (err) {
       console.error("Error updating order status:", err)
-      alert("Failed to update order status")
+      showMessages("Failed to update order status","faild")
     }
   }
 
@@ -57,11 +71,11 @@ function AdminOrders() {
         status: "paid",
         adminVerifiedAt: new Date().toISOString()
       })
-      alert("✅ Payment confirmed! Order status updated to processing.")
+      showMessages(" Payment confirmed! Order status updated to processing.","success")
       setShowProofModal(false)
     } catch (error) {
       console.error("Error confirming payment:", error)
-      alert("Failed to confirm payment")
+      showMessages("Failed to confirm payment","faild")
     }
   }
 
@@ -72,11 +86,11 @@ function AdminOrders() {
         status: "unpaid",
         adminRejectedAt: new Date().toISOString()
       })
-      alert("❌ Payment rejected. Order cancelled.")
+      showMessages(" Payment rejected. Order cancelled.","faild")
       setShowProofModal(false)
     } catch (error) {
       console.error("Error rejecting payment:", error)
-      alert("Failed to reject payment")
+      showMessages("Failed to reject payment","faild")
     }
   }
 
@@ -369,6 +383,12 @@ function AdminOrders() {
     </div>
   </div>
 )}
+      {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50 ${typeColor[message.type]}`}>
+          <h2>{message.message}</h2>
+        </div>
+      }
+
     </div>
   )
 }

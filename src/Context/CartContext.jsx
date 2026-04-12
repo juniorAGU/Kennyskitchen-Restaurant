@@ -150,8 +150,10 @@ function CartContextProvider({ children }) {
     const findit = state.cart.find(item => item.id === prod.id)
     const setQuant = findit ? findit.cartquantity : 0 ;
     if(setQuant + 1 > existQuantity){
-      alert(`sorry only ${existQuantity} available`)
-      return
+      // alert(`sorry only ${existQuantity} available`)
+      return (<div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50`}>
+          <h2> sorry only {existQuantity} available</h2>
+        </div>)
     }
      dispatch({
        type: "ADD_CART",

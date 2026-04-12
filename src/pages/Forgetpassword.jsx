@@ -3,27 +3,38 @@ import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(null);
   const [error, setError] = useState('');
+
+  const showMessages = (message,type) => {
+    setMessage( { message, type} )
+    setTimeout(() => {
+    setMessage(null)
+  }, 3000);
+}
+const typeColor = {
+  success : "bg-green-600",
+  error: "bg-yellow-500",
+  faild : "bg-red-600"
+}
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
-    setMessage('');
     setError('');
 
     if (!email) {
-      setError('Please enter your email address.');
+      showMessages('Please enter your email address. !!!', "faild");
       return;
     }
 
     const auth = getAuth();
     try {
       await sendPasswordResetEmail(auth, email);
-      setMessage(`A password reset link has been sent to ${email}. Please check your inbox.`);
-      setEmail(''); // Clear the email field on success
+      showMessages(`A password reset link has been sent to ${email}. Please check your inbox.`,"success");
+      setEmail(''); 
     } catch (err) {
       console.error("Error sending reset email:", err);
-      // Provide user-friendly error messages
+      
       switch (err.code) {
         case 'auth/user-not-found':
           setError('No account found with this email address.');
@@ -64,6 +75,11 @@ function ForgotPassword() {
           </button>
         </form>
       </div>
+      {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 z-50 rounded ${typeColor[message.type]}`}>
+          <h2>{message.message}</h2>
+        </div>
+      }
     </div>
   );
 }

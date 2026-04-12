@@ -12,7 +12,19 @@ function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+
+
+
+  const showMessage = (message,type1) => {
+    setMessage( { message, type1 } )
+    setTimeout(() => setMessage(null),3000)
+  }
+  const testColors = {
+    success : "bg-green-600",
+    faild: "bg-red-600",
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -20,13 +32,13 @@ function Login() {
       setLoading(true)
 
     if (email === '' || password === '') {
-      alert("Please fill in all fields")
+      showMessage("Please fill in all fields!!!!!!", "faild")
       setLoading(false)
       return
     }
 
     if (password.length < 8) {
-      alert("Password must be at least 8 characters")
+      showMessage("Password must be at least 8 characters","faild")
       setLoading(false)
       return
 
@@ -34,7 +46,7 @@ function Login() {
 
 
     const succes = await login (email, password)
-    console.log("data collected from login",succes)
+    showMessage("loged in successfully !!", "success")
     if(succes){
       navigate('/role-redirect')
       
@@ -113,6 +125,11 @@ function Login() {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+      {
+        message && <div className={`slider fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded ${testColors[message.type1]}`}>
+          <h3>{message}</h3>
+        </div>
+      }
 
     </section>
   )
