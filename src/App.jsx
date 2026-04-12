@@ -65,17 +65,18 @@ emailjs.init('g6k3a4SWme-oTVKk3')
       element: <AuthLayout />,
       children: [{ index: true, element: <ForgotPassword />}]
     },
+    
     { path: "admin", 
       element: <AdminLayout />,
       children: [
-        {index: true, element: <Admindashbord />},
-        {path: 'addfood', element: <Addfood />},
-        {path: 'settings', element: <Settings />},
-        {path: 'users', element: <Usersplace />},
-        {path: 'orders', element: <Order />},
-        {path: 'menu', element: <AdminMenu />},
-        {path: 'messages', element: <AdminMessage />},
-        {path: 'messages/:messageId', element: <AdminMessage />}
+        {index: true, element: <ProtectedRoute> <Admindashbord /> </ProtectedRoute>},
+        {path: 'addfood', element: <ProtectedRoute> <Addfood /> </ProtectedRoute>},
+        {path: 'settings', element: <ProtectedRoute> <Settings /> </ProtectedRoute>},
+        {path: 'users', element: <ProtectedRoute> <Usersplace /> </ProtectedRoute>},
+        {path: 'orders', element: <ProtectedRoute> <Order /> </ProtectedRoute>},
+        {path: 'menu', element: <ProtectedRoute> <AdminMenu /> </ProtectedRoute>},
+        {path: 'messages', element: <ProtectedRoute> <AdminMessage />  </ProtectedRoute>},
+        {path: 'messages/:messageId', element: <ProtectedRoute> <AdminMessage /> </ProtectedRoute>}
       ]
     },
     {

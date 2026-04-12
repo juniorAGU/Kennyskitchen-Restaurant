@@ -209,8 +209,9 @@ console.log("the orders",selectedOrder)
                 <span className="text-xs text-gray-500">Qty: {order.items?.map(item => item.quantity).join(", ")}</span>
                 <span className={`inline-block px-2 py-0.5 rounded-lg text-xs text-white ${
                   order.status === 'pending' ? 'bg-yellow-500' :
-                  order.status === 'processing' ? 'bg-blue-500' :
-                  order.status === 'delivered' ? 'bg-green-500' : 'bg-gray-500'
+                  order.status === 'unpaid' ? 'bg-red-500' :
+                   order.status === 'paid' ? 'bg-green-500' :
+                  order.status === 'delivered' ? 'bg-red-100' : 'bg-gray-500'
                 }`}>
                   {order.status}
                 </span>
@@ -309,7 +310,7 @@ console.log("the orders",selectedOrder)
                             ) : (
                               <div className="space-y-3">
                                 {orders.map(order => (
-                                  <div key={order.id} className="p-3 border rounded-lg flex justify-around items-center">
+                                  <div key={order.id} className="p-3 border rounded-lg flex justify-between items-center">
                                     <div className="mb-2">
                                       <p className="font-semibold text-gray-800 text-sm">Items:</p>
                                       <p className="text-gray-600 text-sm">
@@ -318,9 +319,9 @@ console.log("the orders",selectedOrder)
                                     </div>
                                     <div className="mb-2">
                                       <span className={`inline-block px-2 py-1 rounded-lg text-xs text-white ${
-                                        order.status === 'pending' ? 'bg-yellow-500' :
-                                        order.status === 'processing' ? 'bg-blue-500' :
-                                        order.status === 'delivered' ? 'bg-green-500' : 'bg-gray-500'
+                                        order.status === 'paid' ? 'bg-green-500' : 
+                                        order.status === 'pending' ? 'bg-blue-500' :
+                                        order.status === 'delivered' ? 'bg-red-100' : 'bg-gray-500'
                                       }`}>
                                         {order.status}
                                       </span>

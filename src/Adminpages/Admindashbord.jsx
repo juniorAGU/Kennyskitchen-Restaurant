@@ -126,9 +126,9 @@ function Admindashbord() {
             orders.map(order => 
             <div className="p-6 flex items-center justify-around" key={order.id}>
             <p className="text-gray-500 break-words max-w-[100px]">{order.items.map(item => item.name).join(",")}</p>
-            <p  className="text-gray-500">{order.status}</p>
+            <p  className="text-gray-500 bg-lime-200 px-2 py-1 rounded-lg">{order.status}</p>
             <p  className="text-gray-500">{order.cartquantity}</p>
-            <p  className="text-gray-500"> ₦{(order.summary.total).toLocaleString()}</p>
+            <p  className="text-green-500 font-bold text-xl"> ₦{(order.summary.total).toLocaleString()}</p>
           </div>
             )
           }
@@ -144,10 +144,10 @@ function Admindashbord() {
          <div className='flex-1 overflow-y-auto'>
           {
           allusers.map(user => 
-             <div className="p-6 flex items-center justify-around space-x-4  key={user.id}">
-            <p className="text-gray-500">{user.name}</p>
-            <p className="text-sm text-gray-500">{user.email}</p>
-            <p className="text-xs text-gray-400">{user.role}</p>
+             <div className="p-6 flex items-center justify-between space-x-4  key={user.id}">
+            <p className="text-lg text-gray-500">{user.name}</p>
+            <p className="text-lg text-gray-500 ">{user.email}</p>
+            <p className="text-md bg-lime-200 px-2 py-1 rounded-lg">{user.role}</p>
           </div>
           )
          }
