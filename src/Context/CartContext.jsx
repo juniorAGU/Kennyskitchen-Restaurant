@@ -13,6 +13,7 @@ const initialState = {
 const CartContext = createContext()
 
 const reducer = (state,action)=>{
+  
     switch(action.type){
       case "ADD_CART":
         
@@ -23,7 +24,8 @@ const reducer = (state,action)=>{
           const updated = state.cart.map(item => item.id === prod.id
             ? {...item, cartquantity: item.cartquantity + 1, subtotal: (item.price  * (item.cartquantity + 1)) } : item
           )
-        const newPrice = updated.reduce((sum, item) => sum + (item.price  *  item.cartquantity),0)
+
+          const newPrice = updated.reduce((sum, item) => sum + (item.price  *  item.cartquantity),0)
          
           return{...state, 
             cart: updated,
@@ -37,6 +39,7 @@ const reducer = (state,action)=>{
             price: prod.price,
             image: prod.image,
             cartquantity: 1,
+            quantity: prod.quantity,
             subtotal: prod.price
 
           }
@@ -118,6 +121,7 @@ const reducer = (state,action)=>{
 function CartContextProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
     const [isLoading, setIsLoading] = useState(true) 
+    const [message, setMessage] = useState(null);
   
   useEffect(()=>{
    const storedCart = localStorage.getItem("cart")
@@ -142,7 +146,13 @@ function CartContextProvider({ children }) {
     }
   },[state,isLoading])
 
-  
+  const showMessage = (msg,type) => {
+    setMessage( { msg,type})
+    setTimeout(() => {
+      setMessage(null)
+    }, 3000)
+  }
+ 
 
 
   const addtoCart = (prod) => {
@@ -150,19 +160,27 @@ function CartContextProvider({ children }) {
     const findit = state.cart.find(item => item.id === prod.id)
     const setQuant = findit ? findit.cartquantity : 0 ;
     if(setQuant + 1 > existQuantity){
-      // alert(`sorry only ${existQuantity} available`)
-      return (<div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50`}>
-          <h2> sorry only {existQuantity} available</h2>
-        </div>)
+       showMessage(`sorry only ${existQuantity} available currently !!!`, "failed")
+      return
     }
      dispatch({
        type: "ADD_CART",
        payload: prod
      })
+     showMessage(`${prod.name} successfully added to cart!`, "success")
+     return true
 
   }
   const increaseCart = (item) => {
     console.log(item)
+    const existQuantity = item.quantity || 0;
+    const findit = state.cart.find(cartitem => cartitem.id === item.id)
+    const setQuant = findit ? findit.cartquantity : 0 ;
+    if(setQuant + 1 > existQuantity){
+      showMessage(`sorry only ${existQuantity} available currently !!!`, "failed")
+      return
+    }
+    
     dispatch({
         type: "INCREASE",
         payload: item
@@ -191,6 +209,8 @@ const values = {
     removeCart,
     increaseCart,
     decreaseCart,
+    message,
+    showMessage,
     clearCart: () => dispatch({ type: "RESET" })
 }
   return (

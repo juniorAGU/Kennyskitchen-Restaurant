@@ -9,7 +9,7 @@ function Footer() {
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
                 <div className='space-y-4'>
                     <h2 className="text-2xl font-bold">
-                        KENYS <span  className="text-blue-400">kitchine</span>
+                        KENYS <span  className="text-blue-400">kitchen</span>
                     </h2>
                     <p className="text-gray-400 text-sm leading-relaxed">
                         Serving delicious meals with passion and love. Experience the finest flavors prepared just for you.

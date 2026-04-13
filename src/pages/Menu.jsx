@@ -4,6 +4,7 @@ import Cart from './Cart'
 import { useContext,useState, useReducer } from 'react'
 import { AdminContext } from '../Context/AdminContext'
 import { useCart } from '../Context/CartContext'
+import { typeColor } from '../components/Typecolor'
 
 
 
@@ -12,12 +13,17 @@ import { useCart } from '../Context/CartContext'
 function Menu() {
   const { products } = useContext(AdminContext)
   const [searchTerm, setSearchTerm] = useState('')
-  const { state, addtoCart, removeCart } = useCart();
+  const { state, addtoCart, removeCart, message, showMessage } = useCart();
+  
+
+  
 
 
   const filteredProducts = products.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+   const totalQuantity = state.cart.reduce((total, item) => total + item.cartquantity, 0)
 
 
   
@@ -60,7 +66,7 @@ function Menu() {
             <Link to="/cart" className="relative">
               <span className="text-2xl">🛒</span>
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {state.totalQauntity}
+                {totalQuantity}
               </span>
             </Link>
           </div>
@@ -117,11 +123,13 @@ function Menu() {
                     
                     {/* Add Button */}
                     <button 
-                    onClick={() => addtoCart(item)}
+                    onClick={() => {
+                      addtoCart(item);
+                    }}
                       disabled={!item.instock}
                       className={`px-3 py-1 rounded-lg text-sm font-semibold transition-all ${
                         item.instock 
-                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          ? 'bg-blue-600 hover:bg-blue-900 text-white' 
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
                     >
@@ -134,6 +142,11 @@ function Menu() {
           </div>
         </div>
       </div>
+      {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50 ${typeColor[message.type]}`}>
+          <h2>{message.msg}</h2>
+        </div>
+      }
     </div>
   )
   

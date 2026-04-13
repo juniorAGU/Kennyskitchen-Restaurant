@@ -2,10 +2,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useContext,useState, useReducer } from 'react'
 import { useCart } from '../Context/CartContext';
-
+import { typeColor } from '../components/Typecolor';
 function Cart() {
   
-  const { state,removeCart,increaseCart,decreaseCart } = useCart();
+  const { state,removeCart,increaseCart,decreaseCart,message,showMessage } = useCart();
   const [selectedLocation, setSelectedLocation] = useState('within-5km')
   const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.cartquantity), 0);
 
@@ -239,6 +239,11 @@ function Cart() {
           </div>
         </div>
       </div>
+      {
+        message && <div className={`slider fixed top-4 right-4 text-white px-4 py-2 rounded z-50 ${typeColor[message.type]}`}>
+          <h2>{message.msg}</h2>
+        </div>
+      }
     </div>
   )
 }
